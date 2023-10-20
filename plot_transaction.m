@@ -5,6 +5,6 @@ current = [tr(:,2); 0];
 t = cumsum(durations)
 stairs(t, current,'-o')
 
-xlabel('time [s]')
+xlabel('time [ms]')
 ylabel('current [mA]')
 end
