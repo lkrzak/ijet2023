@@ -115,8 +115,8 @@ TR = [
     ];
 
 % calculate charge
-Q = sum(TR(:,1) .* TR(:,2));
-Q = Q / (1000*3600);
+Q = sum(prod(TR, 2)) / (3.6e6)
+%Q = Q / (1000*3600);
 
 end
 

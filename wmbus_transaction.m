@@ -14,7 +14,7 @@
 % T1, T2 (https://api.apator.com/uploads/oferta/woda-i-cieplo/systemy/radiowy/at-wmbus--16-2-apt-o3a-1-2/at-wmbus-16-2-catalogue.pdf)
 % S1?, C1? (https://hit.sbt.siemens.com/RWD/app.aspx?RC=HQEU&lang=en&MODULE=Catalog&ACTION=ShowProduct&KEY=S55560-F121)
 
-function [V, TR] = wmbus_transaction(mode, app_payload_length)
+function [V, TR, Q] = wmbus_transaction(mode, app_payload_length)
 V = 3.3;
 switch mode
     case 'S1'
@@ -30,16 +30,18 @@ switch mode
     otherwise
         error('not supported WM-bus mode')
 end
-TR = TR * 1000; %
+TR = TR * 1000;
+
+Q = sum(prod(TR, 2)) / (3.6e6)
 end
 
 
 function TR = wmbus_transaction_s1(app_payload_length)
-bitrate_up = 16384; % kbps
+bitrate_up = 16384; % bps
 current_tx = 0.055; %A
 
 preamble_sync_length  = 576 + 2; %bits
-frame_length = preamble_sync_length + (app_payload_length / 8);
+frame_length = preamble_sync_length + (app_payload_length * 8);
 t_tx = frame_length / bitrate_up; %seconds
 TR = [
     t_tx current_tx;  % transmission
@@ -75,14 +77,14 @@ end
 
 
 function TR = wmbus_transaction_t1(app_payload_length)
-bitrate_up = 66666; % kbps
+bitrate_up = 66666; % bps
 
 current_tx = 0.055; %A
 current_rx = 0.02; %A
 
 
 preamble_sync_length  = 48 + 2; %bits
-frame_length = preamble_sync_length + (app_payload_length / 8);
+frame_length = preamble_sync_length + (app_payload_length * 8);
 t_tx = frame_length / bitrate_up; %seconds
 TR = [
     t_tx current_tx;  % transmission
@@ -117,12 +119,12 @@ TR = [
 end
 
 function TR = wmbus_transaction_c1(app_payload_length)
-bitrate_up = 100000; % kbps
+bitrate_up = 100000; % bps
 
 current_tx = 0.055; %A
 
 preamble_sync_length  = 32 + 32; %bits
-frame_length = preamble_sync_length + (app_payload_length / 8);
+frame_length = preamble_sync_length + (app_payload_length * 8);
 t_tx = frame_length / bitrate_up; %seconds
 TR = [
     t_tx current_tx;  % transmission
