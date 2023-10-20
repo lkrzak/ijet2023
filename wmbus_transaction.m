@@ -1,6 +1,6 @@
 % Model based on https://journals.sagepub.com/doi/epub/10.1155/2014/579271
 % current model of a single transaction: each row is:
-% [time (s) current (A)]
+% [time (s) current (mA)]
 %
 % Example = [
 %   0.1 20;   % 20mA during 0.1ms
@@ -37,8 +37,7 @@ preamble_sync_length  = 576 + 2; %bits
 frame_length = preamble_sync_length + (app_payload_length / 8);
 t_tx = frame_length / bitrate_up; %seconds
 TR = [
-    0 0.055;  % transmission
-    t_tx 0 % end of transaction
+    t_tx 55;  % transmission
     ];
 end
 
@@ -49,8 +48,7 @@ preamble_sync_length  = 48 + 2; %bits
 frame_length = preamble_sync_length + (app_payload_length / 8);
 t_tx = frame_length / bitrate_up; %seconds
 TR = [
-    0 0.055;  % transmission
-    t_tx 0 % end of transaction
+    t_tx 55;  % transmission
     ];
 end
 
@@ -63,19 +61,18 @@ preamble_sync_length  = 48 + 2; %bits
 frame_length = preamble_sync_length + (app_payload_length * 8);
 
 % ack length from (https://oms-group.org/fileadmin/files/download4all/specification/Vol2/4.1.2/OMS-Spec_Vol2_AnnexN_B042.pdf)
-ack_length = 30 * 8; %bits 
+ack_length = 30 * 8; %bits
 
 t_tx = frame_length / bitrate_up; %seconds
-t_guard = 0.04; 
+t_guard = 0.04;
 t_rx_ack = 2* t_guard  + (ack_length / bitrate_down); %seconds
 
 t_switch = 0.005; %seconds
 
 TR = [
-    0 0.055;  % transmission
-    t_tx 0 % tx to rx switch time
-    t_tx + t_switch 20;  % reception
-    t_tx + t_switch + t_rx_ack 0 % end of transaction
+    t_tx 55;  % transmission
+    t_switch 0 % tx to rx switch time
+    t_rx_ack 20;  % reception
     ];
 end
 
@@ -85,8 +82,7 @@ preamble_sync_length  = 32 + 32; %bits
 frame_length = preamble_sync_length + (app_payload_length / 8);
 t_tx = frame_length / bitrate_up; %seconds
 TR = [
-    0 0.055;  % transmission
-    t_tx 0 % end of transaction
+    t_tx 55;  % transmission
     ];
 end
 
