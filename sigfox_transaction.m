@@ -1,8 +1,12 @@
-function [V, TR, Q] = sigfox_transaction(mode, app_payload_length)
-V = 3.3;
+function [V, TR] = sigfox_transaction(mode, app_payload_length)
 if app_payload_length <= 0 || app_payload_length > 12
-    error('invalid payload length for a single frame')
+    warning('invalid payload length for a single frame')
+    V = NaN;
+    TR = [NaN, NaN];
+    return
 end
+
+V = 3.3;
 switch mode
     case 'unidirectional'
         TR = sigfox_transaction_unidirectional(app_payload_length);
@@ -11,9 +15,6 @@ switch mode
     otherwise
         error('not supported sigfox mode')
 end
-
-Q = sum(prod(TR, 2)) / (3.6e6)
-
 end
 
 function TR = sigfox_transaction_unidirectional(app_payload_length)
@@ -40,7 +41,7 @@ bitrate_up = 100; % bps
 
 frame_overhead = 14 * 8; %bits minimal frame size, excluding payload
 frame_length = frame_overhead + (app_payload_length * 8);%bits
-t_tx = frame_length / bitrate_up * 1e3 %ms
+t_tx = frame_length / bitrate_up * 1e3; %ms
 TR = [
     287 10.4;  % wake up
     t_tx 27.2 % tx

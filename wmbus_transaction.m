@@ -14,7 +14,14 @@
 % T1, T2 (https://api.apator.com/uploads/oferta/woda-i-cieplo/systemy/radiowy/at-wmbus--16-2-apt-o3a-1-2/at-wmbus-16-2-catalogue.pdf)
 % S1?, C1? (https://hit.sbt.siemens.com/RWD/app.aspx?RC=HQEU&lang=en&MODULE=Catalog&ACTION=ShowProduct&KEY=S55560-F121)
 
-function [V, TR, Q] = wmbus_transaction(mode, app_payload_length)
+function [V, TR] = wmbus_transaction(mode, app_payload_length)
+if app_payload_length <= 0 || app_payload_length >=255
+    warning('impossible wmbus payload length for single frame')
+    V = NaN;
+    TR = [NaN, NaN];
+    return
+end
+
 V = 3.3;
 switch mode
     case 'S1'
@@ -32,7 +39,6 @@ switch mode
 end
 TR = TR * 1000;
 
-Q = sum(prod(TR, 2)) / (3.6e6)
 end
 
 
@@ -80,7 +86,6 @@ function TR = wmbus_transaction_t1(app_payload_length)
 bitrate_up = 66666; % bps
 
 current_tx = 0.055; %A
-current_rx = 0.02; %A
 
 
 preamble_sync_length  = 48 + 2; %bits

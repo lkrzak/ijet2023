@@ -33,7 +33,7 @@
 %
 % Assumed coding rate: 4/5
 %
-function [V, TR, Q] = lora_transaction(dr, frmPayloadLen)
+function [V, TR] = lora_transaction(dr, frmPayloadLen)
 
 CR = 1; % assume coding rate of 4/5
 
@@ -115,10 +115,5 @@ TR = [
     268     21.0;   % (9) postprocessing
     38.6    13.3;   % (10) turn off sequence
     ];
-
-% calculate charge
-Q = sum(prod(TR, 2)) / (3.6e6)
-%Q = Q / (1000*3600);
-
 end
 
