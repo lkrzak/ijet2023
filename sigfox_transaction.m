@@ -1,4 +1,4 @@
-function [V, TR] = sigfox_transaction(mode, app_payload_length)
+function [V, TR, Q] = sigfox_transaction(mode, app_payload_length)
 V = 3.3;
 if app_payload_length <= 0 || app_payload_length > 12
     error('invalid payload length for a single frame')

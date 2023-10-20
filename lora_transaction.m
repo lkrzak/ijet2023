@@ -81,6 +81,8 @@ switch dr
         DE = 0;
         Trx1w = 6.14;
         Tw2w = 0.64;
+    otherwise
+        error("not supported LoRA data rate")
 end
 
 % based on SX1272/3/6/7/8: LoRa Modem DesignerDs Guide AN1200.13:
