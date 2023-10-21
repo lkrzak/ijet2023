@@ -1,54 +1,50 @@
 close all
 clear all
 
+
 idle_current = 0.01; %mA
 available_charge = 1000; %mAh
 payload_length = 1:13;%bytes
 transaction_interval = 3.6e6;%ms
 
-variants = {
-    @(len) sigfox_transaction('unidirectional', len)
-    @(len) sigfox_transaction('bidirectional', len)
-    @(len) wmbus_transaction('S1', len)
-    @(len) wmbus_transaction('S2', len)
-    @(len) wmbus_transaction('T1', len)
-    @(len) wmbus_transaction('T2', len)
-    @(len) wmbus_transaction('C1', len)
-    @(len) lora_transaction(0, len)
-    @(len) lora_transaction(1, len)
-    @(len) lora_transaction(2, len)
-    @(len) lora_transaction(3, len)
-    @(len) lora_transaction(4, len)
-    @(len) lora_transaction(5, len)
-    @(len) lora_transaction(6, len)
-    @(len) actislink_transaction('02', len)
-    @(len) actislink_transaction('13', len)
-    @(len) actislink_transaction('47', len)
-    @(len) actislink_transaction('58', len)
-    @(len) actislink_transaction('69', len)
-    };
+min_len = 1;
+max_len = 16;
 
-transaction_charge = zeros(length(variants), length(payload_length)); %mAh
-transaction_duration = zeros(length(variants), length(payload_length)); % ms
+actislink_modes = ["02" "13", "47", "58", "69"]';
+actislink_tab = generate_variants("Actislink", actislink_modes, min_len, max_len, @actislink_transaction);
 
-for len = 1 : length(payload_length)
-    for variant = 1: size(variants)
-        [voltage, tr] = variants{variant}(payload_length(len));
-        transaction_charge(variant, len) = sum(prod(tr, 2)) / (3.6e6);
-        transaction_duration(variant, len) = sum(tr(:,1));
-    end
+lora_modes = [0, 1, 2, 3, 4, 5, 6]';
+lora_tab = generate_variants("LoRa", lora_modes, min_len, max_len, @lora_transaction);
+
+sigfox_modes = ["unidirectional", "bidirectional"]';
+sigfox_tab = generate_variants("Sigfox", sigfox_modes, min_len, max_len, @sigfox_transaction);
+
+wmbus_modes = ["S1", "S2", "T1", "T2", "C1"]';
+wmbus_tab = generate_variants("WM-BUS", wmbus_modes, min_len, max_len, @wmbus_transaction);
+
+
+input = vertcat(actislink_tab , lora_tab, sigfox_tab, wmbus_tab);
+
+% result = table('Size', [height(variants) 3], 'VariableTypes', {'double', 'double', 'double'}, );
+
+
+transaction_charge = zeros(height(input), 1);
+transaction_duration = zeros(height(input), 1);
+
+for v = 1: height(input)
+    entry = input(v, :);
+    [voltage, tr] = entry.Callback{1}(entry.Mode, entry.Payload);
+    transaction_charge(v) = sum(prod(tr, 2)) / (3.6e6);
+    transaction_duration(v) = sum(tr(:,1));
 end
 
 
-charge_per_interval = zeros(length(variants), length(payload_length)); % mAh
+charge_per_interval = zeros(height(input), 1); % mAh
 
-for len = 1 : length(payload_length)
-    for variant = 1: size(variants)
-        idle_duration = transaction_interval-transaction_duration(variant, len);
-        idle_charge = idle_duration * idle_current / 3.6e6;
-
-        charge_per_interval(variant, len) = idle_charge + transaction_charge(variant, len);
-    end
+for v = 1: height(input)
+    idle_duration = transaction_interval-transaction_duration(v);
+    idle_charge = idle_duration * idle_current / 3.6e6;
+    charge_per_interval(v) = idle_charge + transaction_charge(v);
 end
 
 max_intervals = ceil(max(available_charge ./ charge_per_interval, [],"all"));
@@ -56,12 +52,25 @@ max_intervals = ceil(max(available_charge ./ charge_per_interval, [],"all"));
 figure;
 
 t = linspace(0, max_intervals);
-for len = 1 : length(payload_length)
-    for variant = 1: size(variants)
-        hold on;
-        y = available_charge - t * charge_per_interval(variant, len);
-        plot(t, y);
-    end
+for v = 1: height(input)
+    hold on;
+    y = available_charge - t * charge_per_interval(v);
+    entry = input(v,:);
+    plot(t, y,'DisplayName',strcat(entry.Protocol, ' mode:' ,entry.Mode, "@", num2str(entry.Payload)));
 end
+
+function[tab] = generate_variants(name, modes, min_length, max_length, fn)
+length_variants = max_length - min_length + 1;
+mode_variants = length(modes);
+lengths = repmat([min_length : max_length]', mode_variants, 1);
+modes = repmat(modes, length_variants, 1);
+count = mode_variants * length_variants;
+names = repmat(name, count, 1);
+
+callbacks = repmat({fn}, count, 1);
+
+tab = table(names, modes, lengths, callbacks, 'VariableNames', ["Protocol", "Mode", "Payload", "Callback"]);
+end
+
 
 
