@@ -79,7 +79,7 @@ for i = 1:size(item, 2)
         [v, item(i).transaction] = lora_transaction(item(i).mode, payload_length);
     end
     if strcmp(item(i).protocol, 'Sigfox')
-        [v, item(i).transaction] = sigfox_transaction(item(i).mode, payload_length);
+        [v, item(i).transaction] = sigfox_transaction(item(i).mode, 12);
     end     
     if strcmp(item(i).protocol, 'Actislink')
         [v, item(i).transaction] = actislink_transaction(item(i).mode, payload_length);
@@ -88,16 +88,18 @@ for i = 1:size(item, 2)
 end
 
 f = figure;
+f.Position = [0 0 700 600];
 barh([item.totalCharge], 'BarWidth', 0.5);
 axis = gca;
 c = struct2cell(item);
 axis.YTickLabels = c(3,1,:);
 axis.YTick=1:size(item, 2);
 axis.YAxis.TickLength = [0 0];
+axis.YDir = 'reverse';
 xlabel('Charge consumed in single transaction [\muAh]');
 ylabel('Protocol and mode');
-
+xlim([0 150]);
 for i = 1:size(item, 2)
-    text(item(i).totalCharge+0.1,i, num2str(item(i).totalCharge, '%.3f'));
+    text(item(i).totalCharge+0.5,i, num2str(item(i).totalCharge, '%.2f'));
 end
 box off
