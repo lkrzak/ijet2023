@@ -24,7 +24,7 @@ switch mode
         bitrate_up = 500;
         bitrate_down = 500;
     otherwise
-        error('not supported Actislink mode')
+        error('not supported Actislink mode: %s', mode)
 end
 
 % packet transmission time [ms]

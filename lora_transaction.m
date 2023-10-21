@@ -39,50 +39,50 @@ CR = 1; % assume coding rate of 4/5
 
 % based on LoRaWAN regional requirements for EU868:
 switch dr
-    case '0'
+    case 'DR0'
         SF = 12;
         DE = 1;
         BW = 125000;
         Trx1w = 262.14;
         Tw2w = 33.02;
-    case '1'
+    case 'DR1'
         SF = 11;
         DE = 1;
         BW = 125000;
         Trx1w = 131.07;
         Tw2w = 16.64;
-    case '2'
+    case 'DR2'
         SF = 10;
         BW = 125000;
         DE = 0;
         Trx1w = 98.30;
         Tw2w = 8.45;
-    case '3'
+    case 'DR3'
         SF = 9;
         BW = 125000;
         DE = 0;
         Trx1w = 49.15;
         Tw2w = 4.35;
-    case '4'
+    case 'DR4'
         SF = 8;
         BW = 125000;
         DE = 0;
         Trx1w = 24.58;
         Tw2w = 2.30;
-    case '5'
+    case 'DR5'
         SF = 7;
         BW = 125000;
         DE = 0;
         Trx1w = 12.29;
         Tw2w = 1.28;
-    case '6'
+    case 'DR6'
         SF = 7;
         BW = 125000;
         DE = 0;
         Trx1w = 6.14;
         Tw2w = 0.64;
     otherwise
-        error("not supported LoRA data rate")
+        error("Not supported LoRA data rate: %s", dr);
 end
 
 % based on SX1272/3/6/7/8: LoRa Modem DesignerDs Guide AN1200.13:
