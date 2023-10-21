@@ -6,7 +6,6 @@ available_charge = 1000; %mAh
 payload_length = 1:13;%bytes
 transaction_interval = 3.6e6;%ms
 
-
 variants = {
     @(len) sigfox_transaction('unidirectional', len)
     @(len) sigfox_transaction('bidirectional', len)
@@ -22,6 +21,11 @@ variants = {
     @(len) lora_transaction(4, len)
     @(len) lora_transaction(5, len)
     @(len) lora_transaction(6, len)
+    @(len) actislink_transaction('02', len)
+    @(len) actislink_transaction('13', len)
+    @(len) actislink_transaction('47', len)
+    @(len) actislink_transaction('58', len)
+    @(len) actislink_transaction('69', len)
     };
 
 transaction_charge = zeros(length(variants), length(payload_length)); %mAh
