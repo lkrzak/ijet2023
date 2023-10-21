@@ -39,12 +39,12 @@ i = i + 1;
 item(i).protocol = 'LoRaWAN';
 item(i).mode = 'DR4';
 i = i + 1;
-% item(i).protocol = 'LoRaWAN';
-% item(i).mode = 'DR5';
-% i = i + 1;
-% item(i).protocol = 'LoRaWAN';
-% item(i).mode = 'DR6';
-% i = i + 1;
+item(i).protocol = 'LoRaWAN';
+item(i).mode = 'DR5';
+i = i + 1;
+item(i).protocol = 'LoRaWAN';
+item(i).mode = 'DR6';
+i = i + 1;
 
 item(i).protocol = 'Sigfox';
 item(i).mode = 'unidirectional';
@@ -88,11 +88,11 @@ for i = 1:size(item, 2)
 end
 
 f = figure;
-f.Position = [0,0,2000, 2800];
-barh([item.totalCharge], 'BarWidth', 0.2);
+barh([item.totalCharge], 'BarWidth', 0.5);
 axis = gca;
 c = struct2cell(item);
 axis.YTickLabels = c(3,1,:);
+axis.YTick=1:size(item, 2);
 axis.YAxis.TickLength = [0 0];
 xlabel('Charge consumed in single transaction [\muAh]');
 ylabel('Protocol and mode');
