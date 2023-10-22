@@ -1,4 +1,4 @@
-function [V, TR] = sigfox_transaction(mode, app_payload_length)
+function [V, TR, ULB, DLB] = sigfox_transaction(mode, app_payload_length)
 if app_payload_length <= 0 || app_payload_length > 12
     warning('invalid payload length for a single frame')
     V = NaN;
@@ -7,6 +7,9 @@ if app_payload_length <= 0 || app_payload_length > 12
 end
 
 V = 3.3;
+ULB = 156;
+DLB = 153;
+
 switch mode
     case 'unidirectional'
         TR = sigfox_transaction_unidirectional(app_payload_length);

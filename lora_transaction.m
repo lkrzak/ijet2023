@@ -33,57 +33,72 @@
 %
 % Assumed coding rate: 4/5
 %
-function [V, TR] = lora_transaction(dr, frmPayloadLen)
+function [V, TR, ULB, DLB] = lora_transaction(dr, frmPayloadLen)
 
 CR = 1; % assume coding rate of 4/5
+tx_power = 10;% dBm
 
 % based on LoRaWAN regional requirements for EU868:
 switch dr
     case 'DR0'
         SF = 12;
         DE = 1;
-        BW = 125000;
+        BW = 125000; % Hz
         Trx1w = 262.14;
         Tw2w = 33.02;
+        sensitivity = -136.5; %dBm
     case 'DR1'
         SF = 11;
         DE = 1;
-        BW = 125000;
-        Trx1w = 131.07;
-        Tw2w = 16.64;
+        BW = 125000; % Hz
+        Trx1w = 131.07; % ms
+        Tw2w = 16.64; % ms
+        sensitivity = -134; %dBm     
     case 'DR2'
         SF = 10;
-        BW = 125000;
+        BW = 125000; % Hz
         DE = 0;
-        Trx1w = 98.30;
-        Tw2w = 8.45;
+        Trx1w = 98.30; % ms
+        Tw2w = 8.45; % ms   
+        sensitivity = -131.5; %dBm  
     case 'DR3'
         SF = 9;
-        BW = 125000;
+        BW = 125000; % Hz
         DE = 0;
-        Trx1w = 49.15;
-        Tw2w = 4.35;
+        Trx1w = 49.15; % ms
+        Tw2w = 4.35; % ms        
+        sensitivity = -129; %dBm  
     case 'DR4'
         SF = 8;
-        BW = 125000;
+        BW = 125000; % Hz
         DE = 0;
-        Trx1w = 24.58;
-        Tw2w = 2.30;
+        Trx1w = 24.58; % ms
+        Tw2w = 2.30; % ms        
+        sensitivity = -126.5; %dBm  
     case 'DR5'
         SF = 7;
-        BW = 125000;
+        BW = 125000; % Hz
         DE = 0;
-        Trx1w = 12.29;
-        Tw2w = 1.28;
+        Trx1w = 12.29; % ms
+        Tw2w = 1.28; % ms        
+        sensitivity = -124; %dBm  
     case 'DR6'
         SF = 7;
-        BW = 125000;
+        BW = 250000; % Hz
         DE = 0;
-        Trx1w = 6.14;
-        Tw2w = 0.64;
+        Trx1w = 6.14; % ms
+        Tw2w = 0.64; % ms        
+        sensitivity = -121; %dBm  
     otherwise
         error("Not supported LoRA data rate: %s", dr);
 end
+
+% calculate uplink link budget
+ULB = tx_power - sensitivity;
+
+% assume that downlink and uplink budget links are the same
+DLB = ULB;
+
 
 % based on SX1272/3/6/7/8: LoRa Modem DesignerDs Guide AN1200.13:
 Tsym = (2^SF)/BW;             % symbol time in [s]

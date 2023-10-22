@@ -1,4 +1,4 @@
-function [V, TR] = actislink_transaction(mode, app_payload_length)
+function [V, TR, ULB, DLB] = actislink_transaction(mode, app_payload_length)
 V = 3.3;
 
 phy_overhead = 19; % there are 19 bytes of overhead in each packet
@@ -10,19 +10,29 @@ current_idle = 5; % mA
 switch mode
     case '02'
         bitrate_up = 50000;
-        bitrate_down = 19200;        
+        bitrate_down = 19200;
+        ULB = 118;
+        DLB = 132;
     case '13'
         bitrate_up = 1200;
         bitrate_down = 9600;
+        ULB = 132;
+        DLB = 135;
     case '47'
         bitrate_up = 19200;
         bitrate_down = 19200;
+        ULB = 123;
+        DLB = 126;
     case '58'
         bitrate_up = 9600;
         bitrate_down = 9600;
+        ULB = 126;
+        DLB = 136;
     case '69'
         bitrate_up = 500;
         bitrate_down = 500;
+        ULB = 140;
+        DLB = 147;
     otherwise
         error('not supported Actislink mode: %s', mode)
 end
