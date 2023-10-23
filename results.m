@@ -68,22 +68,33 @@ i = i + 1;
 item(i).protocol = 'Actislink';
 item(i).mode = '69';
 i = i + 1;
+item(i).protocol = 'NB-IoT';
+item(i).mode = 'psm';
+i = i + 1;
 
 
 for i = 1:size(item, 2)
     item(i).name = strcat(item(i).protocol, ":", item(i).mode);
     if strcmp(item(i).protocol, 'WMBus')
         [v, item(i).transaction item(i).uplink_budget item(i).downlink_budget] = wmbus_transaction(item(i).mode, payload_length);
+        item(i).color = 'ob';
     end
     if strcmp(item(i).protocol, 'LoRaWAN')
         [v, item(i).transaction item(i).uplink_budget item(i).downlink_budget] = lora_transaction(item(i).mode, payload_length);
+        item(i).color = 'or';
     end
     if strcmp(item(i).protocol, 'Sigfox')
         [v, item(i).transaction item(i).uplink_budget item(i).downlink_budget] = sigfox_transaction(item(i).mode, 12);
+        item(i).color = 'om';
     end     
     if strcmp(item(i).protocol, 'Actislink')
         [v, item(i).transaction item(i).uplink_budget item(i).downlink_budget] = actislink_transaction(item(i).mode, payload_length);
-    end    
+        item(i).color = 'og';
+    end  
+    if strcmp(item(i).protocol, 'NB-IoT')
+        [v, item(i).transaction item(i).uplink_budget item(i).downlink_budget] = nbiot_transaction(item(i).mode, payload_length);
+        item(i).color = 'oc';
+    end     
     item(i).totalCharge = sum(prod(item(i).transaction, 2)) / (3.6e3); %uAh
 end
 
@@ -111,13 +122,22 @@ end
 box off
 
 f = figure;
-x = [item.uplink_budget];
-y = [item.totalCharge];
-c = struct2cell(item);
-plot(x,y,'o')
+for i = 1:size(item, 2)
+     plot(item(i).uplink_budget,item(i).totalCharge,item(i).color);
+     hold on;
+end
 axis = gca;
 axis.YScale ="log";
-labelpoints(x,y,labels,'SE',0.2,1)
+labelpoints([item.uplink_budget],[item.totalCharge],labels,'SE',0.2,1)
 xlabel('Uplink budget [dB]');
 ylabel('Charge per transaction [\muAh]');
 xlim([100 190]);
+
+f = figure;
+for i = 1:size(item, 2)
+    plot_transaction(item(i).transaction);
+    hold on;
+end
+axis = gca;
+axis.XScale ="log";
+
