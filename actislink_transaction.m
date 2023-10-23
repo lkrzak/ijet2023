@@ -1,11 +1,11 @@
-function [V, TR, ULB, DLB] = actislink_transaction(mode, app_payload_length)
+function [V, TR, ULB, DLB] = actislink_transaction(mode, app_payload_length, ack_mode)
 V = 3.3;
 
 phy_overhead = 19; % there are 19 bytes of overhead in each packet
-ack_length = 20; % length of the ACK packet
-current_tx = 55; % mA
-current_rx = 20; % mA
-current_idle = 5; % mA
+ack_length = 24; % length of the ACK packet
+current_tx = 17.5; % mA
+current_rx = 5.5; % mA
+current_idle = 3; % mA
 
 switch mode
     case '02'
@@ -49,15 +49,34 @@ Trxnoack = (8*8)*1000/bitrate_down;
 % active part of the receive window if there is an ACK [ms]
 Trxack = (24*8)*1000/bitrate_down;
 
-TR = [
-    5                   current_idle;   % (1) wake up
-    Ttx                 current_tx;     % (2) transmission
-    5                   current_idle;   % (3) tx-rx time
-    Trxnoack            current_rx;     % (4) 1st receive window (no ACK)
-    Trxwindow-Trxnoack  current_idle;   % (5) wait 2nd window
-    Trxack              current_rx;     % (6) 1st receive window (got ACK)
-    5                   current_idle;   % (7) turn off sequence
-    ];
-
+switch ack_mode
+    case 0
+        TR = [
+            2                   current_idle;   % (1) wake up
+            Ttx                 current_tx;     % (2) transmission
+            2                   current_idle;   % (3) tx-rx time
+            Trxnoack            current_rx;     % (4) 1st receive window (no ACK)
+            Trxwindow-Trxnoack  current_idle;   % (5) wait 2nd window
+            Trxnoack            current_rx;     % (6) 1st receive window (got ACK)
+            0.5                 current_idle;   % (7) turn off sequence
+            ];
+    case 1
+         TR = [
+            2                   current_idle;   % (1) wake up
+            Ttx                 current_tx;     % (2) transmission
+            2                   current_idle;   % (3) tx-rx time
+            Trxnoack            current_rx;     % (4) 1st receive window (no ACK)
+            Trxwindow-Trxnoack  current_idle;   % (5) wait 2nd window
+            Trxack              current_rx;     % (6) 1st receive window (got ACK)
+            0.5                 current_idle;   % (7) turn off sequence
+            ];
+    case 2
+        TR = [
+            2                   current_idle;   % (1) wake up
+            Ttx                 current_tx;     % (2) transmission
+            2                   current_idle;   % (3) tx-rx time
+            Trxack              current_rx;     % (4) 1st receive window (no ACK)
+            0.5                 current_idle;   % (5) turn off sequence
+            ];         
 end
 

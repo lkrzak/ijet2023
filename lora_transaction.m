@@ -47,6 +47,8 @@ switch dr
         Trx1w = 262.14;
         Tw2w = 33.02;
         sensitivity = -136.5; %dBm
+        Tack = 1134;
+        Tpre = 230;
     case 'DR1'
         SF = 11;
         DE = 1;
@@ -54,6 +56,8 @@ switch dr
         Trx1w = 131.07; % ms
         Tw2w = 16.64; % ms
         sensitivity = -134; %dBm     
+        Tack = 612;
+        Tpre = 82;
     case 'DR2'
         SF = 10;
         BW = 125000; % Hz
@@ -61,6 +65,8 @@ switch dr
         Trx1w = 98.30; % ms
         Tw2w = 8.45; % ms   
         sensitivity = -131.5; %dBm  
+        Tack = 290;
+        Tpre = 41;        
     case 'DR3'
         SF = 9;
         BW = 125000; % Hz
@@ -68,6 +74,8 @@ switch dr
         Trx1w = 49.15; % ms
         Tw2w = 4.35; % ms        
         sensitivity = -129; %dBm  
+        Tack = 140;
+        Tpre = 21;
     case 'DR4'
         SF = 8;
         BW = 125000; % Hz
@@ -75,6 +83,8 @@ switch dr
         Trx1w = 24.58; % ms
         Tw2w = 2.30; % ms        
         sensitivity = -126.5; %dBm  
+        Tack = 78;
+        Tpre = 10;        
     case 'DR5'
         SF = 7;
         BW = 125000; % Hz
@@ -82,6 +92,8 @@ switch dr
         Trx1w = 12.29; % ms
         Tw2w = 1.28; % ms        
         sensitivity = -124; %dBm  
+        Tack = 39.8;
+        Tpre = 5;        
     case 'DR6'
         SF = 7;
         BW = 250000; % Hz
@@ -89,6 +101,8 @@ switch dr
         Trx1w = 6.14; % ms
         Tw2w = 0.64; % ms        
         sensitivity = -121; %dBm  
+        Tack = 20;
+        Tpre = 2.5;        
     otherwise
         error("Not supported LoRA data rate: %s", dr);
 end
@@ -118,17 +132,25 @@ V = 3.3;
 % Casals, L.; Mir, B.; Vidal, R.; Gomez, C. 
 % Modeling the Energy Performance of LoRaWAN. 
 % Sensors 2017, 17, 2364. https://doi.org/10.3390/s17102364
+% TR = [
+%     168.2   22.1;   % (1) wake up
+%     83.8    13.3;   % (2) radio preparation
+%     Ttx     83.0;   % (3) transmission
+%     983.3   27.0;   % (4) wait 1st window
+%     Trx1w   38.1;   % (5) 1st receive window
+%     Tw2w    27.1;   % (6) wait 2nd window
+%     33      35.0;   % (7) 2nd receive window
+%     147.4   13.2;   % (8) radio off
+%     268     21.0;   % (9) postprocessing
+%     38.6    13.3;   % (10) turn off sequence
+%     ];
 TR = [
-    168.2   22.1;   % (1) wake up
-    83.8    13.3;   % (2) radio preparation
-    Ttx     83.0;   % (3) transmission
-    983.3   27.0;   % (4) wait 1st window
-    Trx1w   38.1;   % (5) 1st receive window
-    Tw2w    27.1;   % (6) wait 2nd window
-    33      35.0;   % (7) 2nd receive window
-    147.4   13.2;   % (8) radio off
-    268     21.0;   % (9) postprocessing
-    38.6    13.3;   % (10) turn off sequence
+    1.722   2.268;  % (1) wake up
+    Ttx     27.0;   % (2) transmission
+    0.3     2.072;  % (3) tx off
+    1000    0.123   % (4) wait for 1st receive window
+    Tack    10.76;  % (5) ACK reception
+    0.3     2.054;   % (10) turn off sequence
     ];
 end
 

@@ -1,28 +1,28 @@
 close all
 clear all
 
-sleep_current = 0.010; %mA
+sleep_current = 0.003; %mA
 available_charge = 1000; %mAh
 payload_length = 16; %bytes
 
 
 i = 1;
 
-item(i).protocol = 'WMBus';
-item(i).mode = 'S1';
-i = i + 1;
+% item(i).protocol = 'WMBus';
+% item(i).mode = 'S1';
+% i = i + 1;
 item(i).protocol = 'WMBus';
 item(i).mode = 'S2';
 i = i + 1;
-item(i).protocol = 'WMBus';
-item(i).mode = 'T1';
-i = i + 1;
+% item(i).protocol = 'WMBus';
+% item(i).mode = 'T1';
+% i = i + 1;
 item(i).protocol = 'WMBus';
 item(i).mode = 'T2';
 i = i + 1;
-item(i).protocol = 'WMBus';
-item(i).mode = 'C1';
-i = i + 1;
+% item(i).protocol = 'WMBus';
+% item(i).mode = 'C1';
+% i = i + 1;
 
 item(i).protocol = 'LoRaWAN';
 item(i).mode = 'DR0';
@@ -46,9 +46,9 @@ item(i).protocol = 'LoRaWAN';
 item(i).mode = 'DR6';
 i = i + 1;
 
-item(i).protocol = 'Sigfox';
-item(i).mode = 'unidirectional';
-i = i + 1;
+% item(i).protocol = 'Sigfox';
+% item(i).mode = 'unidirectional';
+% i = i + 1;
 item(i).protocol = 'Sigfox';
 item(i).mode = 'bidirectional';
 i = i + 1;
@@ -88,7 +88,7 @@ for i = 1:size(item, 2)
         item(i).color = 'om';
     end     
     if strcmp(item(i).protocol, 'Actislink')
-        [v, item(i).transaction item(i).uplink_budget item(i).downlink_budget] = actislink_transaction(item(i).mode, payload_length);
+        [v, item(i).transaction item(i).uplink_budget item(i).downlink_budget] = actislink_transaction(item(i).mode, payload_length, 1);
         item(i).color = 'og';
     end  
     if strcmp(item(i).protocol, 'NB-IoT')
