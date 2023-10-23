@@ -1,6 +1,9 @@
 close all
 clear all
 
+addpath('labelpoints')
+
+
 sleep_current = 0.010; %mA
 available_charge = 1000; %mAh
 payload_length = 16; %bytes
