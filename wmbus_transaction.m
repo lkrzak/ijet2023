@@ -13,7 +13,7 @@
 % S1, T1 (https://www.arigo-software.de/en/shop/domestic-flush-mbus-water-meter.html)
 % T1, T2 (https://api.apator.com/uploads/oferta/woda-i-cieplo/systemy/radiowy/at-wmbus--16-2-apt-o3a-1-2/at-wmbus-16-2-catalogue.pdf)
 % S1?, C1? (https://hit.sbt.siemens.com/RWD/app.aspx?RC=HQEU&lang=en&MODULE=Catalog&ACTION=ShowProduct&KEY=S55560-F121)
-
+% Current and sensitivity data based on STM32WLE5C datasheet
 function [V, TR, ULB, DLB] = wmbus_transaction(mode, app_payload_length)
 if app_payload_length <= 0 || app_payload_length >=255
     warning('impossible wmbus payload length for single frame')
@@ -27,24 +27,24 @@ tx_power = 10; % dBm
 switch mode
     case 'S1'
         TR =  wmbus_transaction_s1(app_payload_length);
-        sensitivity = -110; % dBm @ 80% PER
+        sensitivity = -108; 
     case 'S2'
         TR =  wmbus_transaction_s2(app_payload_length);
-        sensitivity = -110; % dBm @ 80% PER       
+        sensitivity = -108;     
     case 'T1'
         TR =  wmbus_transaction_t1(app_payload_length);
-        sensitivity = -106; % dBm @ 80% PER     
+        sensitivity = -103; 
     case 'T2'
         TR =  wmbus_transaction_t2(app_payload_length);
-        sensitivity = -106; % dBm @ 80% PER       
+        sensitivity = -103; 
     case 'C1'
         TR =  wmbus_transaction_c1(app_payload_length);
-        sensitivity = -110; % dBm @ 80% PER      
+        sensitivity = -110; 
     otherwise
         error('not supported WM-bus mode')
 end
 TR = TR * 1000;
-ULB = tx_power - sensitivity - 6;
+ULB = tx_power - sensitivity;
 DLB = ULB;
 
 end
@@ -52,8 +52,7 @@ end
 
 function TR = wmbus_transaction_s1(app_payload_length)
 bitrate_up = 16384; % bps
-current_tx = 0.055; %A
-
+current_tx = 0.0175; %A
 preamble_sync_length  = 576 + 2; %bits
 frame_length = preamble_sync_length + (app_payload_length * 8);
 t_tx = frame_length / bitrate_up; %seconds
@@ -67,8 +66,8 @@ function TR = wmbus_transaction_s2(app_payload_length)
 bitrate_up = 16384; %bps
 bitrate_down = 16384; %bps
 
-current_tx = 0.055; %A
-current_rx = 0.02; %A
+current_tx = 0.0175; %A
+current_rx = 0.0055; %A
 
 preamble_sync_length  = 48 + 2; %bits
 frame_length = preamble_sync_length + (app_payload_length * 8);
@@ -93,8 +92,7 @@ end
 function TR = wmbus_transaction_t1(app_payload_length)
 bitrate_up = 66666; % bps
 
-current_tx = 0.055; %A
-
+current_tx = 0.0175; %A
 
 preamble_sync_length  = 48 + 2; %bits
 frame_length = preamble_sync_length + (app_payload_length * 8);
@@ -109,8 +107,8 @@ function TR = wmbus_transaction_t2(app_payload_length)
 bitrate_up = 66666; %bps
 bitrate_down = 16384; %bps
 
-current_tx = 0.055; %A
-current_rx = 0.02; %A
+current_tx = 0.0175; %A
+current_rx = 0.0055; %A
 
 preamble_sync_length  = 48 + 2; %bits
 frame_length = preamble_sync_length + (app_payload_length * 8);
@@ -134,7 +132,7 @@ end
 function TR = wmbus_transaction_c1(app_payload_length)
 bitrate_up = 100000; % bps
 
-current_tx = 0.055; %A
+current_tx = 0.0175; %A
 
 preamble_sync_length  = 32 + 32; %bits
 frame_length = preamble_sync_length + (app_payload_length * 8);
