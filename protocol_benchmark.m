@@ -13,7 +13,7 @@ max_len = 16;
 actislink_modes = ["02" "13", "47", "58", "69"]';
 actislink_tab = generate_variants("Actislink", actislink_modes, min_len, max_len, @actislink_transaction);
 
-lora_modes = [0, 1, 2, 3, 4, 5, 6]';
+lora_modes = ["DR0", "DR1", "DR2", "DR3", "DR4", "DR5", "DR6"]';
 lora_tab = generate_variants("LoRa", lora_modes, min_len, max_len, @lora_transaction);
 
 sigfox_modes = ["unidirectional", "bidirectional"]';
@@ -23,7 +23,9 @@ wmbus_modes = ["S1", "S2", "T1", "T2", "C1"]';
 wmbus_tab = generate_variants("WM-BUS", wmbus_modes, min_len, max_len, @wmbus_transaction);
 
 
-input = vertcat(actislink_tab , lora_tab, sigfox_tab, wmbus_tab);
+nbiot_tab = generate_variants("NB-IoT", "PSM", min_len, max_len, @nbiot_transatction);
+
+input = vertcat(actislink_tab , lora_tab, sigfox_tab, wmbus_tab, nbiot_tab);
 
 % result = table('Size', [height(variants) 3], 'VariableTypes', {'double', 'double', 'double'}, );
 
