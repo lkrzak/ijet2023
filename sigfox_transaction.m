@@ -1,3 +1,24 @@
+% This function returns:
+% V - nominal voltage in Volts
+% CCP - current consumption profile (see below)
+% ULB - link budget for uplink in dB
+% DLB - link budget for downlink in dB
+%
+% CCP is the current consumption profile of a single transaction
+% It is a matrix, where each row has 2 columns:
+% time (ms) current (mA)
+%
+% ExampleCCP = [
+%   0.1 20;   % consumed 20mA during 0.1ms
+%   2.5 30;   % consumed 30mA during 2.5ms
+% ];
+%
+% -- Sigfox specific --
+% The data is based on:
+% Gomez, Carles & Veras, Juan & Vidal Ferré, Rafael & Casals Ibáñez, 
+% Lluis & Paradells, Josep. (2019). 
+% A Sigfox Energy Consumption Model. Sensors. 19. 681. 10.3390/s19030681. 
+%
 function [V, TR, ULB, DLB] = sigfox_transaction(mode, app_payload_length)
 if app_payload_length <= 0 || app_payload_length > 12
     warning('invalid payload length for a single frame')
