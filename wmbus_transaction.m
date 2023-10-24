@@ -39,7 +39,7 @@ switch mode
         sensitivity = -103; 
     case 'C1'
         TR =  wmbus_transaction_c1(app_payload_length);
-        sensitivity = -110; 
+        sensitivity = -108; 
     otherwise
         error('not supported WM-bus mode')
 end
@@ -68,6 +68,7 @@ bitrate_down = 16384; %bps
 
 current_tx = 0.0175; %A
 current_rx = 0.0055; %A
+current_idle = 0.005; %A
 
 preamble_sync_length  = 48 + 2; %bits
 frame_length = preamble_sync_length + (app_payload_length * 8);
@@ -82,9 +83,9 @@ t_rx_ack = 2* t_guard  + (ack_length / bitrate_down); %seconds
 t_switch = 0.001; %seconds
 
 TR = [
-    t_tx current_tx;  % transmission
-    t_switch 0 % tx to rx switch time
-    t_rx_ack current_rx;  % reception
+    t_tx        current_tx;  % transmission
+    t_switch    current_idle; % tx to rx switch time
+    t_rx_ack    current_rx;  % reception
     ];
 end
 
@@ -109,6 +110,7 @@ bitrate_down = 16384; %bps
 
 current_tx = 0.0175; %A
 current_rx = 0.0055; %A
+current_idle = 0.005; %A
 
 preamble_sync_length  = 48 + 2; %bits
 frame_length = preamble_sync_length + (app_payload_length * 8);
@@ -123,9 +125,9 @@ t_rx_ack = 2* t_guard  + (ack_length / bitrate_down); %seconds
 t_switch = 0.001; %seconds
 
 TR = [
-    t_tx current_tx;  % transmission
-    t_switch 0 % tx to rx switch time
-    t_rx_ack current_rx;  % reception
+    t_tx        current_tx;  % transmission
+    t_switch    current_idle; % tx to rx switch time
+    t_rx_ack    current_rx;  % reception
     ];
 end
 

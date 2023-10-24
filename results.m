@@ -145,13 +145,13 @@ axis.YDir = 'reverse';
 xlabel('Charge consumed in a single transaction [\muAh]');
 ylabel('Protocol and mode');
 xlim([0 30]);
-hold on
+hold on;
 for i = 1:length(item) - 1
    
     text(item(i).totalCharge+0.5,i, num2str(item(i).totalCharge, '%.2f'));
 end
 annotation('textarrow', [.95 .95], [.20 .13], 'String',item(end).totalCharge);
-box off
+box off;
 
 
 
@@ -180,3 +180,22 @@ end
 axis = gca;
 axis.XScale ="log";
 
+f = figure;
+plot_transaction(item(4).transaction, 'b');
+xlabel('Time [ms]');
+ylabel('Consumed current [mA]');
+%annotation('textarrow', [0.3,0.234], [0.2905,0.3238], 'String','IDLE');
+text(3, 16, 'TX');
+text(50, 4, 'RX');
+f.Position = [0 0 500 250];
+saveas(f,'tr_wmbus.png')
+
+f = figure;
+plot_transaction(item(14).transaction, 'b');
+xlabel('Time [ms]');
+ylabel('Consumed current [mA]');
+f.Position = [0 0 500 250];
+text(500, 5, 'TX');
+text(1700, 5, 'SLEEP');
+text(2800, 5, 'RX');
+saveas(f,'tr_lorawan.png')

@@ -1,18 +1,20 @@
 % This function returns:
 % V - nominal voltage in Volts
-% TR - transaction current (see below)
-% Q - total charge consumed by transaction in mAh
+% CCP - current consumption profile (see below)
+% ULB - link budget for uplink in dB
+% DLB - link budget for downlink in dB
 %
-% TR: current model of a single transaction
+% CCP is the current consumption profile of a single transaction
 % It is a matrix, where each row has 2 columns:
 % time (ms) current (mA)
 %
-% ExampleTR = [
-%   0.1 20;   % 20mA during 0.1ms
-%   2.5 30;   % 30mA during 2.5ms
+% ExampleCCP = [
+%   0.1 20;   % consumed 20mA during 0.1ms
+%   2.5 30;   % consumed 30mA during 2.5ms
 % ];
 %
-% LoRaWAN:
+% -- LoRaWAN specific --
+%
 % Data rates for EU863-870 band channels.
 % DR  Modulation    SF  BW      Bitrate
 % 0	  LoRa          12	125 kHz	250
@@ -21,7 +23,6 @@
 % 3	  LoRa	        9	125 kHz	1760
 % 4	  LoRa	        8	125 kHz	3125
 % 5	  LoRa	        7	125 kHz	5470
-% 6	  LoRa	        7	250 kHz	11000
 %
 % Assumed PHY packet format
 % | preamble | PHDR    | PHDR_CRC | PHY payload  | CRC    |
@@ -36,7 +37,7 @@
 function [V, TR, ULB, DLB] = lora_transaction(dr, frmPayloadLen)
 
 CR = 1; % assume coding rate of 4/5
-tx_power = 10;% dBm
+tx_power = 10; % dBm
 
 % based on LoRaWAN regional requirements for EU868:
 switch dr
@@ -44,11 +45,10 @@ switch dr
         SF = 12;
         DE = 1;
         BW = 125000; % Hz
-        Trx1w = 262.14;
-        Tw2w = 33.02;
+        Trx1w = 262.14; % ms
+        Tw2w = 33.02; % ms
         sensitivity = -136.5; %dBm
-        Tack = 1134;
-        Tpre = 230;
+        Tack = 1134; % ms
     case 'DR1'
         SF = 11;
         DE = 1;
@@ -56,8 +56,7 @@ switch dr
         Trx1w = 131.07; % ms
         Tw2w = 16.64; % ms
         sensitivity = -134; %dBm     
-        Tack = 612;
-        Tpre = 82;
+        Tack = 612; % ms
     case 'DR2'
         SF = 10;
         BW = 125000; % Hz
@@ -65,8 +64,7 @@ switch dr
         Trx1w = 98.30; % ms
         Tw2w = 8.45; % ms   
         sensitivity = -131.5; %dBm  
-        Tack = 290;
-        Tpre = 41;        
+        Tack = 290; % ms
     case 'DR3'
         SF = 9;
         BW = 125000; % Hz
@@ -74,8 +72,7 @@ switch dr
         Trx1w = 49.15; % ms
         Tw2w = 4.35; % ms        
         sensitivity = -129; %dBm  
-        Tack = 140;
-        Tpre = 21;
+        Tack = 140; % ms
     case 'DR4'
         SF = 8;
         BW = 125000; % Hz
@@ -83,8 +80,7 @@ switch dr
         Trx1w = 24.58; % ms
         Tw2w = 2.30; % ms        
         sensitivity = -126.5; %dBm  
-        Tack = 78;
-        Tpre = 10;        
+        Tack = 78; % ms   
     case 'DR5'
         SF = 7;
         BW = 125000; % Hz
@@ -92,8 +88,7 @@ switch dr
         Trx1w = 12.29; % ms
         Tw2w = 1.28; % ms        
         sensitivity = -124; %dBm  
-        Tack = 39.8;
-        Tpre = 5;        
+        Tack = 39.8; % ms   
     case 'DR6'
         SF = 7;
         BW = 250000; % Hz
@@ -101,8 +96,7 @@ switch dr
         Trx1w = 6.14; % ms
         Tw2w = 0.64; % ms        
         sensitivity = -121; %dBm  
-        Tack = 20;
-        Tpre = 2.5;        
+        Tack = 20; % ms
     otherwise
         error("Not supported LoRA data rate: %s", dr);
 end
@@ -113,11 +107,9 @@ ULB = tx_power - sensitivity;
 % assume that downlink and uplink budget links are the same
 DLB = ULB;
 
-
-% based on SX1272/3/6/7/8: LoRa Modem DesignerDs Guide AN1200.13:
+% based on SX1272/3/6/7/8: LoRa Modem Designers Guide AN1200.13:
 Tsym = (2^SF)/BW;             % symbol time in [s]
 Tpreamble = (8 + 4.25)*Tsym;  % preamble time in [s]
-
 tp = 8*frmPayloadLen - 4 *SF + 28 + 16;
 tp = tp / (4*(SF - 2*DE));
 tp = ceil(tp);
@@ -144,6 +136,11 @@ V = 3.3;
 %     268     21.0;   % (9) postprocessing
 %     38.6    13.3;   % (10) turn off sequence
 %     ];
+
+% based on:
+% Maudet, S.; Andrieux, G.; Chevillon, R.; Diouris, J.-F. 
+% Refined Node Energy Consumption Modeling in a LoRaWAN Network. 
+% Sensors 2021, 21, 6398. https://doi.org/10.3390/s21196398
 TR = [
     1.722   2.268;  % (1) wake up
     Ttx     27.0;   % (2) transmission
