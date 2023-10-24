@@ -199,3 +199,17 @@ text(500, 5, 'TX');
 text(1700, 5, 'SLEEP');
 text(2800, 5, 'RX');
 saveas(f,'tr_lorawan.png')
+
+f = figure;
+plot_transaction(item(16).transaction, 'b');
+xlabel('Time [ms]');
+ylabel('Consumed current [mA]');
+f.Position = [0 0 500 250];
+text(300,  24, 'TX');
+text(2900, 24, 'TX');
+text(5500, 24, 'TX');
+text(15000, 10, 'WAIT');
+text(29000, 10, 'RX');
+text(38200, 24, 'TX');
+saveas(f,'tr_sigfox.png')
+
