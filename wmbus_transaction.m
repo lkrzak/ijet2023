@@ -40,6 +40,9 @@ switch mode
     case 'C1'
         TR =  wmbus_transaction_c1(app_payload_length);
         sensitivity = -108; 
+    case 'N2a'
+        TR =  wmbus_transaction_n2a(app_payload_length);
+        sensitivity = -108; 
     otherwise
         error('not supported WM-bus mode')
 end
@@ -74,7 +77,7 @@ preamble_sync_length  = 48 + 2; %bits
 frame_length = preamble_sync_length + (app_payload_length * 8);
 
 % ack length from (https://oms-group.org/fileadmin/files/download4all/specification/Vol2/4.1.2/OMS-Spec_Vol2_AnnexN_B042.pdf)
-ack_length = preamble_sync_length + 30 * 8; %bits
+ack_length = preamble_sync_length + 16 * 8; %bits
 
 t_tx = frame_length / bitrate_up; %seconds
 t_guard = 0.03;
@@ -116,7 +119,7 @@ preamble_sync_length  = 48 + 2; %bits
 frame_length = preamble_sync_length + (app_payload_length * 8);
 
 % ack length from (https://oms-group.org/fileadmin/files/download4all/specification/Vol2/4.1.2/OMS-Spec_Vol2_AnnexN_B042.pdf)
-ack_length = preamble_sync_length + 30 * 8; %bits
+ack_length = preamble_sync_length + 16 * 8; %bits
 
 t_tx = frame_length / bitrate_up; %seconds
 t_guard = 0.03;
@@ -143,4 +146,30 @@ TR = [
     t_tx current_tx;  % transmission
     ];
 end
+
+function    TR =  wmbus_transaction_n2a(app_payload_length)
+current_tx = 0.0175; %A
+current_rx = 0.0055; %A
+current_idle = 0.005; %A
+
+bitrate_up = 4800; % bps
+bitrate_down = 4800; % bps
+current_tx = 0.0175; %A
+
+preamble_sync_length  = 16 + 16; %bits
+frame_length = preamble_sync_length + (app_payload_length * 8);
+ack_length = preamble_sync_length + 16 * 8; %bits
+t_guard = 0.03;
+t_rx_ack = 2* t_guard  + (ack_length / bitrate_down); %seconds
+
+t_switch = 0.001; %seconds
+
+t_tx = frame_length / bitrate_up; %seconds
+TR = [
+    t_tx        current_tx;  % transmission
+    t_switch    current_idle; % tx to rx switch time
+    t_rx_ack    current_rx;  % reception
+    ];
+end
+
 

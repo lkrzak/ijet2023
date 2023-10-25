@@ -12,56 +12,53 @@ payload_length = 16; %bytes
 
 i = 1;
 
-% item(i).protocol = 'WMBus';
-% item(i).mode = 'S1';
-% i = i + 1;
 item(i).protocol = 'WMBus';
 item(i).mode = 'S2';
 item(i).pos = "N";
 i = i + 1;
-% item(i).protocol = 'WMBus';
-% item(i).mode = 'T1';
-% i = i + 1;
+
 item(i).protocol = 'WMBus';
 item(i).mode = 'T2';
 item(i).pos = "NE";
 i = i + 1;
-% item(i).protocol = 'WMBus';
-% item(i).mode = 'C1';
-% i = i + 1;
+
+
 
 item(i).protocol = 'LoRaWAN';
 item(i).mode = 'DR0';
 item(i).pos = "SE";
 i = i + 1;
+
 item(i).protocol = 'LoRaWAN';
 item(i).mode = 'DR1';
 item(i).pos = "SE";
 i = i + 1;
+
 item(i).protocol = 'LoRaWAN';
 item(i).mode = 'DR2';
 item(i).pos = "SE";
 i = i + 1;
+
 item(i).protocol = 'LoRaWAN';
 item(i).mode = 'DR3';
 item(i).pos = "SE";
 i = i + 1;
+
 item(i).protocol = 'LoRaWAN';
 item(i).mode = 'DR4';
 item(i).pos = "SE";
 i = i + 1;
+
 item(i).protocol = 'LoRaWAN';
 item(i).mode = 'DR5';
 item(i).pos = "SE";
 i = i + 1;
+
 item(i).protocol = 'LoRaWAN';
 item(i).mode = 'DR6';
 item(i).pos = "SE";
 i = i + 1;
 
-% item(i).protocol = 'Sigfox';
-% item(i).mode = 'unidirectional';
-% i = i + 1;
 item(i).protocol = 'Sigfox';
 item(i).mode = 'bidirectional';
 item(i).pos = "SW";
@@ -76,44 +73,50 @@ item(i).protocol = 'Actislink';
 item(i).mode = '02';
 item(i).pos = "SE";
 i = i + 1;
+
 item(i).protocol = 'Actislink';
 item(i).mode = '13';
 item(i).pos = "NW";
 i = i + 1;
+
 item(i).protocol = 'Actislink';
 item(i).mode = '47';
 item(i).pos = "SE";
 i = i + 1;
+
 item(i).protocol = 'Actislink';
 item(i).mode = '58';
 item(i).pos = "SE";
 i = i + 1;
+
 item(i).protocol = 'Actislink';
 item(i).mode = '69';
 item(i).pos = "NW";
+item(i).protocol = 'WMBus';
+item(i).mode = 'N2a';
+item(i).pos = "NE";
 i = i + 1;
-
 
 for i = 1:length(item)
     item(i).name = strcat(item(i).protocol, ":", item(i).mode);
     if strcmp(item(i).protocol, 'WMBus')
-        [v, item(i).transaction item(i).uplink_budget item(i).downlink_budget] = wmbus_transaction(item(i).mode, payload_length);
+        [v, item(i).transaction, item(i).uplink_budget, item(i).downlink_budget] = wmbus_transaction(item(i).mode, payload_length);
         item(i).color = 'xb';
     end
     if strcmp(item(i).protocol, 'LoRaWAN')
-        [v, item(i).transaction item(i).uplink_budget item(i).downlink_budget] = lora_transaction(item(i).mode, payload_length);
+        [v, item(i).transaction, item(i).uplink_budget, item(i).downlink_budget] = lora_transaction(item(i).mode, payload_length);
         item(i).color = 'or';
     end
     if strcmp(item(i).protocol, 'Sigfox')
-        [v, item(i).transaction item(i).uplink_budget item(i).downlink_budget] = sigfox_transaction(item(i).mode, 12);
+        [v, item(i).transaction, item(i).uplink_budget, item(i).downlink_budget] = sigfox_transaction(item(i).mode, 12);
         item(i).color = '^m';
     end     
     if strcmp(item(i).protocol, 'Actislink')
-        [v, item(i).transaction item(i).uplink_budget item(i).downlink_budget] = actislink_transaction(item(i).mode, payload_length, 1);
+        [v, item(i).transaction, item(i).uplink_budget, item(i).downlink_budget] = actislink_transaction(item(i).mode, payload_length, 1);
         item(i).color = 'og';
     end  
     if strcmp(item(i).protocol, 'NB-IoT')
-        [v, item(i).transaction item(i).uplink_budget item(i).downlink_budget] = nbiot_transaction(item(i).mode, payload_length);
+        [v, item(i).transaction, item(i).uplink_budget, item(i).downlink_budget] = nbiot_transaction(item(i).mode, payload_length);
         item(i).color = 'vc';
     end     
     item(i).totalCharge = sum(prod(item(i).transaction, 2)) / (3.6e3); %uAh
