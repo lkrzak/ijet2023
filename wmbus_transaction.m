@@ -42,7 +42,7 @@ switch mode
         sensitivity = -108; 
     case 'N2a'
         TR =  wmbus_transaction_n2a(app_payload_length);
-        sensitivity = -108; 
+        sensitivity = -112; 
     otherwise
         error('not supported WM-bus mode')
 end

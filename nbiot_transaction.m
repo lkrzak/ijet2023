@@ -7,8 +7,20 @@ V = 3.7;
 tx_power = 10;% dBm
 sensitivity = -140;%dBm (nRF9160)
 ULB=tx_power - sensitivity;
-DLB=ULB;
 TR = nbiot_transaction_psm(app_payload_length);
+
+switch mode
+    case 'MCS=0,rep=8'
+        ULB = 156;
+    case 'MCS=2,rep=8'
+        ULB = 150;
+    case 'MCS=10,rep=1'
+        ULB = 140;
+    otherwise
+        error('not supported NB-IoT mode: %s', mode)
+end
+DLB=ULB;
+
 end
 
 
