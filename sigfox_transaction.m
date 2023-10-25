@@ -28,8 +28,8 @@ if app_payload_length <= 0 || app_payload_length > 12
 end
 
 V = 3.3;
-ULB = 156;
-DLB = 153;
+ULB = 132 + 14.5;
+DLB = 126 + 23;
 
 switch mode
     case 'unidirectional'

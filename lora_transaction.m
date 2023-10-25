@@ -47,7 +47,7 @@ switch dr
         BW = 125000; % Hz
         Trx1w = 262.14; % ms
         Tw2w = 33.02; % ms
-        sensitivity = -136.5; %dBm
+        sensitivity = -138; %dBm
         Tack = 1134; % ms
     case 'DR1'
         SF = 11;
@@ -87,7 +87,7 @@ switch dr
         DE = 0;
         Trx1w = 12.29; % ms
         Tw2w = 1.28; % ms        
-        sensitivity = -124; %dBm  
+        sensitivity = -125; %dBm  
         Tack = 39.8; % ms   
     case 'DR6'
         SF = 7;
@@ -95,7 +95,7 @@ switch dr
         DE = 0;
         Trx1w = 6.14; % ms
         Tw2w = 0.64; % ms        
-        sensitivity = -121; %dBm  
+        sensitivity = -122; %dBm  
         Tack = 20; % ms
     otherwise
         error("Not supported LoRA data rate: %s", dr);
