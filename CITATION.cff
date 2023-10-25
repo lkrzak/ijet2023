@@ -1,0 +1,7 @@
+@software{IJET2023_Krzak_Kubaszek_Macheta_Worek,
+  author = {Krzak, Łukasz and Kubaszek, Mateusz and Macheta, Jan and Worek, Cezary},
+  title = {{Comparison of wireless data transmission protocols for residential water meter applications - Matlab scripts}},
+  url = {https://github.com/lkrzak/ijet2023},
+  version = {1.0.0},
+  year = {2023}
+}
