@@ -16,7 +16,7 @@ switch mode
     case '13'
         bitrate_up = 1200;
         bitrate_down = 9600;
-        ULB = 132;
+        ULB = 135;
         DLB = 135;
     case '47'
         bitrate_up = 19200;
@@ -57,10 +57,18 @@ switch ack_mode
             2                   current_idle;   % (3) tx-rx time
             Trxnoack            current_rx;     % (4) 1st receive window (no ACK)
             Trxwindow-Trxnoack  current_idle;   % (5) wait 2nd window
-            Trxnoack            current_rx;     % (6) 1st receive window (got ACK)
+            Trxnoack            current_rx;     % (6) 1st receive window (no ACK)
             0.5                 current_idle;   % (7) turn off sequence
             ];
     case 1
+        TR = [
+            2                   current_idle;   % (1) wake up
+            Ttx                 current_tx;     % (2) transmission
+            2                   current_idle;   % (3) tx-rx time
+            Trxack              current_rx;     % (4) 1st receive window (got ACK)
+            0.5                 current_idle;   % (5) turn off sequence
+            ];         
+    case 2
          TR = [
             2                   current_idle;   % (1) wake up
             Ttx                 current_tx;     % (2) transmission
@@ -70,13 +78,5 @@ switch ack_mode
             Trxack              current_rx;     % (6) 1st receive window (got ACK)
             0.5                 current_idle;   % (7) turn off sequence
             ];
-    case 2
-        TR = [
-            2                   current_idle;   % (1) wake up
-            Ttx                 current_tx;     % (2) transmission
-            2                   current_idle;   % (3) tx-rx time
-            Trxack              current_rx;     % (4) 1st receive window (no ACK)
-            0.5                 current_idle;   % (5) turn off sequence
-            ];         
 end
 

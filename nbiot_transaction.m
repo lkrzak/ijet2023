@@ -5,7 +5,7 @@ function [V, TR, ULB, DLB] = nbiot_transaction(mode, app_payload_length)
 V = 3.7;
 
 tx_power = 10;% dBm
-sensitivity = -108;%dBm (nRF9160)
+sensitivity = -140;%dBm (nRF9160)
 ULB=tx_power - sensitivity;
 DLB=ULB;
 TR = nbiot_transaction_psm(app_payload_length);

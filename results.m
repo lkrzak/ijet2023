@@ -67,6 +67,11 @@ item(i).mode = 'bidirectional';
 item(i).pos = "SW";
 i = i + 1;
 
+item(i).protocol = 'NB-IoT';
+item(i).mode = 'psm';
+item(i).pos = "NE";
+i = i + 1;
+
 item(i).protocol = 'Actislink';
 item(i).mode = '02';
 item(i).pos = "SE";
@@ -86,10 +91,6 @@ i = i + 1;
 item(i).protocol = 'Actislink';
 item(i).mode = '69';
 item(i).pos = "NW";
-i = i + 1;
-item(i).protocol = 'NB-IoT';
-item(i).mode = 'psm';
-item(i).pos = "NE";
 i = i + 1;
 
 
@@ -117,6 +118,59 @@ for i = 1:length(item)
     end     
     item(i).totalCharge = sum(prod(item(i).transaction, 2)) / (3.6e3); %uAh
 end
+
+
+% Calculation of charge for NB-IoT
+item(11).totalCharge = (3000 / 3.3) / 3.6;
+
+
+
+% Wireless M-Bus S2 transaction
+f = figure;
+plot_transaction(item(1).transaction, 'b');
+xlabel('Time [ms]');
+ylabel('Consumed current [mA]');
+%annotation('textarrow', [0.3,0.234], [0.2905,0.3238], 'String','IDLE');
+text(3, 16, 'TX');
+text(50, 4, 'RX');
+f.Position = [0 0 500 250];
+saveas(f,'tr_wmbus.png')
+
+% LoRaWAN DR0 transaction
+f = figure;
+plot_transaction(item(3).transaction, 'b');
+xlabel('Time [ms]');
+ylabel('Consumed current [mA]');
+f.Position = [0 0 500 250];
+text(500, 5, 'TX');
+text(1700, 5, 'SLEEP');
+text(2800, 5, 'RX');
+saveas(f,'tr_lorawan.png')
+
+% Sigfox transaction
+f = figure;
+plot_transaction(item(10).transaction, 'b');
+xlabel('Time [ms]');
+ylabel('Consumed current [mA]');
+f.Position = [0 0 500 250];
+text(300,  24, 'TX');
+text(2900, 24, 'TX');
+text(5500, 24, 'TX');
+text(15000, 10, 'WAIT');
+text(29000, 10, 'RX');
+text(38200, 24, 'TX');
+saveas(f,'tr_sigfox.png')
+
+% Actislink transaction
+f = figure;
+plot_transaction(item(12).transaction, 'b');
+xlabel('Time [ms]');
+ylabel('Consumed current [mA]');
+f.Position = [0 0 500 250];
+text(4, 13, 'TX');
+text(14, 3, 'RX');
+saveas(f,'tr_actislink.png')
+
 
 
 T = struct2table(item); % convert the struct array to a table
@@ -169,8 +223,8 @@ axis = gca;
 axis.YScale ="log";
 xlabel('Uplink budget [dB]');
 ylabel('Charge per transaction [\muAh]');
-xlim([110 160]);
-ylim([0.01, 2e2])
+xlim([110 180]);
+ylim([0.01, 5e2])
 
 f = figure;
 for i = 1:length(item)
@@ -179,37 +233,4 @@ for i = 1:length(item)
 end
 axis = gca;
 axis.XScale ="log";
-
-f = figure;
-plot_transaction(item(4).transaction, 'b');
-xlabel('Time [ms]');
-ylabel('Consumed current [mA]');
-%annotation('textarrow', [0.3,0.234], [0.2905,0.3238], 'String','IDLE');
-text(3, 16, 'TX');
-text(50, 4, 'RX');
-f.Position = [0 0 500 250];
-saveas(f,'tr_wmbus.png')
-
-f = figure;
-plot_transaction(item(14).transaction, 'b');
-xlabel('Time [ms]');
-ylabel('Consumed current [mA]');
-f.Position = [0 0 500 250];
-text(500, 5, 'TX');
-text(1700, 5, 'SLEEP');
-text(2800, 5, 'RX');
-saveas(f,'tr_lorawan.png')
-
-f = figure;
-plot_transaction(item(16).transaction, 'b');
-xlabel('Time [ms]');
-ylabel('Consumed current [mA]');
-f.Position = [0 0 500 250];
-text(300,  24, 'TX');
-text(2900, 24, 'TX');
-text(5500, 24, 'TX');
-text(15000, 10, 'WAIT');
-text(29000, 10, 'RX');
-text(38200, 24, 'TX');
-saveas(f,'tr_sigfox.png')
 

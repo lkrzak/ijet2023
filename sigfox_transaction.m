@@ -54,6 +54,7 @@ TR = [
     t_tx 27.2 % tx replica 1
     486 1.2 % wait for next transmission
     t_tx 27.2 % tx replica 2
+    5    1.2 % switch off
     ];
 end
 
@@ -76,5 +77,6 @@ TR = [
     12690 18.5 % avg active reception window (0.387-25s)
     1430 1.2 % wait for confirmation tx
     1850 27 % confirmation tx
+    5    1.2 % switch off
     ];
 end
